@@ -21,7 +21,15 @@ const db_uri = process.env.DB_URI;
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: process.env.URL_PORT,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    exposedHeaders: ["Content-Type"],
+  })
+);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
