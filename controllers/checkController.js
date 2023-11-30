@@ -6,10 +6,7 @@ export const createCheck = async (req, res) => {
     const newCheck = new Check(req.body);
     await newCheck.save();
 
-    const checksCount = await Check.countDocuments();
-    const lastPage = Math.ceil(checksCount / 10);
-
-    res.status(201).json({ check: newCheck, lastPage });
+    res.status(201).json({ check: newCheck });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -56,18 +53,18 @@ export const updateCheck = async (req, res) => {
 };
 
 // Delete check
-export const deleteTable = async (req, res) => {
-  const { id } = req.params;
+// export const deleteCheck = async (req, res) => {
+//   const { id } = req.params;
 
-  try {
-    const deletedCheck = await Check.findByIdAndDelete(id);
+//   try {
+//     const deletedCheck = await Check.findByIdAndDelete(id);
 
-    if (!deletedCheck) {
-      return res.status(404).json({ message: "check not found" });
-    }
+//     if (!deletedCheck) {
+//       return res.status(404).json({ message: "check not found" });
+//     }
 
-    res.status(200).json(deletedCheck);
-  } catch (err) {
-    res.status(500).json({ message: { error: err.message } });
-  }
-};
+//     res.status(200).json(deletedCheck);
+//   } catch (err) {
+//     res.status(500).json({ message: { error: err.message } });
+//   }
+// };

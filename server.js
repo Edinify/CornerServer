@@ -13,6 +13,7 @@ import categoryRoutes from "./router/categoryRoutes.js";
 import tableRoutes from "./router/tableRoutes.js";
 import expenseRoutes from "./router/expenseRoutes.js";
 import financeRoutes from "./router/financeRoutes.js";
+import checkRoutes from "./router/checkRoutes.js";
 
 dotenv.config();
 
@@ -42,6 +43,7 @@ app.use("/api/category/", categoryRoutes);
 app.use("/api/table/", tableRoutes);
 app.use("/api/expense/", expenseRoutes);
 app.use("/api/finance/", financeRoutes);
+app.use("/api/check/", checkRoutes);
 
 app.get("/", (req, res) => {
   res.send("salam");

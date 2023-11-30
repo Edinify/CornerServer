@@ -5,6 +5,7 @@ export const createMenuProduct = async (req, res) => {
   try {
     const newProduct = new Menu(req.body);
     await newProduct.save();
+    await newProduct.populate("product");
 
     const productsCount = await Menu.countDocuments();
     const lastPage = Math.ceil(productsCount / 10);
@@ -27,7 +28,8 @@ export const getMenuProducts = async (req, res) => {
 
     const products = await Menu.find()
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .populate("product");
 
     res.status(200).json({ products, totalPages });
   } catch (err) {
@@ -43,7 +45,7 @@ export const updateMenuProduct = async (req, res) => {
     const updatedProduct = await Menu.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    });
+    }).populate("product");
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Base Product not found" });

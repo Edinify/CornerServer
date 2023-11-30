@@ -14,7 +14,7 @@ const menuSchema = new Schema(
     },
     price: {
       type: Number,
-      default: "admin",
+      required: true,
     },
     unitAmount: {
       type: Number,

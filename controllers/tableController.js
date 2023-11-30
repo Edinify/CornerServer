@@ -1,3 +1,4 @@
+import { Check } from "../model/checkModel.js";
 import { Table } from "../model/tableModel.js";
 
 // Create table
@@ -44,6 +45,30 @@ export const getTables = async (req, res) => {
     res.status(200).json({ tables, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
+  }
+};
+
+// Get tables for user
+export const getTablesForUser = async (req, res) => {
+  try {
+    const tables = await Table.find();
+
+    const checkedTables = await Promise.all(
+      tables.map(async (table) => {
+        const checkTable = await Check.findOne({
+          status: "open",
+          "table._id": table.id,
+        });
+
+        return { ...table.toObject(), open: checkTable ? true : false };
+      })
+    );
+
+    console.log(checkedTables);
+
+    res.status(200).json(checkedTables);
+  } catch (err) {
+    return res.status(500).json({ message: { error: err.message } });
   }
 };
 
