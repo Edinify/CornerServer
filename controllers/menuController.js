@@ -37,6 +37,17 @@ export const getMenuProducts = async (req, res) => {
   }
 };
 
+// Get menu products for user
+export const getMenuProductsForUser = async (req, res) => {
+  try {
+    const products = await Menu.find().populate("product");
+
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
 // Update menu product
 export const updateMenuProduct = async (req, res) => {
   const { id } = req.params;
