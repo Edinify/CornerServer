@@ -8,7 +8,7 @@ import {
 const router = express.Router();
 
 router.post("/", createCheck);
-router.post("/", getChecks);
+router.get("/", getChecks);
 router.patch("/:id", updateCheck);
 
 export default router;
