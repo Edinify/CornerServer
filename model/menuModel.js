@@ -11,6 +11,7 @@ const menuSchema = new Schema(
     product: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Base",
     },
     price: {
       type: Number,

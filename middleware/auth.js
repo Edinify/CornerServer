@@ -23,13 +23,13 @@ export const authMiddleware = (req, res, next) => {
         next();
       });
     } catch (err) {
-      res.status(401).json({
+      return res.status(401).json({
         key: "invalid-access-token",
         message: err.message,
       });
     }
   } else {
-    res.status(401).json({
+    return res.status(401).json({
       key: "invalid-access-token",
       message: "Authorization header is missing",
     });

@@ -60,11 +60,16 @@ export const loginAdmin = async (req, res) => {
 
 export const loginUser = async (req, res) => {
   const { accessCode } = req.body;
+
+  console.log(req.body);
+  console.log(accessCode, "access code");
   try {
     const code = await AccessCode.findOne({ accessCode: accessCode });
 
     if (!code) {
-      res.status(404).json({ key: "invalid-code", message: "invalid code" });
+      return res
+        .status(404)
+        .json({ key: "invalid-code", message: "invalid code" });
     }
 
     res.status(200).json({ key: "correct-code" });
