@@ -72,7 +72,7 @@ export const loginUser = async (req, res) => {
         .json({ key: "invalid-code", message: "invalid code" });
     }
 
-    res.status(200).json({ key: "correct-code" });
+    res.status(200).json(code);
   } catch (err) {
     return res.status(500).json({ message: { error: err.message } });
   }
