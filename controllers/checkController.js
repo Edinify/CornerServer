@@ -32,6 +32,25 @@ export const getChecks = async (req, res) => {
   }
 };
 
+// Get check
+export const getCheck = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const check = await Check.findById(id);
+
+    if (!check) {
+      return res
+        .status(404)
+        .json({ key: "check-not-found", message: "check note found" });
+    }
+
+    res.status(200).json(check);
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
 // Update check
 export const updateCheck = async (req, res) => {
   const { id } = req.params;
