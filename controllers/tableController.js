@@ -60,7 +60,7 @@ export const getTablesForUser = async (req, res) => {
           "table._id": table.id,
         });
 
-        return { ...table.toObject(), checkId: checkTable?._id };
+        return { ...table.toObject(), checkId: checkTable?._id || null };
       })
     );
 

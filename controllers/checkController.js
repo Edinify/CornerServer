@@ -1,3 +1,4 @@
+import { Base } from "../model/baseModel.js";
 import { Check } from "../model/checkModel.js";
 
 // Create check
@@ -5,6 +6,10 @@ export const createCheck = async (req, res) => {
   try {
     const newCheck = new Check(req.body);
     await newCheck.save();
+
+  //  newCheck.orders.forEach(async item=> {
+  //   const baseProduct = await Base.findByIdAndUpdate
+  //  })
 
     res.status(201).json({ check: newCheck });
   } catch (err) {
