@@ -25,6 +25,8 @@ export const registerAdmin = async (req, res) => {
 
 export const loginAdmin = async (req, res) => {
   const { email, password } = req.body;
+
+
   try {
     const regexEmail = new RegExp(email, "i");
 
@@ -44,7 +46,7 @@ export const loginAdmin = async (req, res) => {
         .json({ key: "admin-not-found", message: "invalid password" });
     }
 
-    console.log(process.env.SECRET_KEY);
+    // console.log(process.env.SECRET_KEY);
     const accessToken = jwt.sign({ _id: admin._id }, process.env.SECRET_KEY, {
       expiresIn: "7d",
     });
@@ -61,8 +63,8 @@ export const loginAdmin = async (req, res) => {
 export const loginUser = async (req, res) => {
   const { accessCode } = req.body;
 
-  console.log(req.body);
-  console.log(accessCode, "access code");
+  // console.log(req.body);
+  // console.log(accessCode, "access code");
   try {
     const code = await AccessCode.findOne({ accessCode: accessCode });
 

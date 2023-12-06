@@ -19,13 +19,12 @@ dotenv.config();
 
 const port = process.env.PORT;
 const db_uri = process.env.DB_URI;
-
+console.log(port)
 const app = express();
-
+console.log(process.env.URL_PORT);
 app.use(
   cors({
-    origin: process.env.URL_PORT,
-    credentials: true,
+    origin: "*",
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     exposedHeaders: ["Content-Type"],
@@ -33,7 +32,7 @@ app.use(
 );
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
+// 
 app.use("/api/auth/admin/", authRoutes);
 app.use("/api/admin/", adminRoutes);
 app.use("/api/user/", userRoutes);

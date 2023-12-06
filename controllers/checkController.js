@@ -25,7 +25,7 @@ export const getChecks = async (req, res) => {
     const checks = await Check.find()
       .skip((page - 1) * limit)
       .limit(limit);
-
+    console.log(checks,2)
     res.status(200).json({ checks, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
@@ -44,7 +44,7 @@ export const getCheck = async (req, res) => {
         .status(404)
         .json({ key: "check-not-found", message: "check note found" });
     }
-
+    console.log(check,"1")
     res.status(200).json(check);
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
