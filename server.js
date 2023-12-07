@@ -52,7 +52,7 @@ mongoose
   .then(() => {
     console.log("connected database");
     app.listen(process.env.PORT, async () => {
-      console.log(`listen server at ${port}`);
+      console.log(`listen server at ${process.env.PORT}`);
     });
   })
   .catch((err) => console.log(err));
