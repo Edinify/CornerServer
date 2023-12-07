@@ -1,12 +1,23 @@
+import { Base } from "../model/baseModel.js";
 import { Check } from "../model/checkModel.js";
 
 // Create check
 export const createCheck = async (req, res) => {
+  const { orders } = req.body;
+  console.log(req.body, "new check");
   try {
     const newCheck = new Check(req.body);
     await newCheck.save();
 
-    res.status(201).json({ check: newCheck });
+    for (let item of orders) {
+      const targetProduct = await Base.findById(item.order.product._id);
+
+      targetProduct.totalAmount -= item.orderCount;
+      await targetProduct.save();
+      console.log(targetProduct, "create targetProduct");
+    }
+
+    res.status(201).json(newCheck);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -56,6 +67,7 @@ export const updateCheck = async (req, res) => {
   const { id } = req.params;
 
   try {
+    const currentCheck = await Check.findById(id);
     const updatedCheck = await Check.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
@@ -63,6 +75,37 @@ export const updateCheck = async (req, res) => {
 
     if (!updatedCheck) {
       return res.status(404).json({ message: "check not found" });
+    }
+
+    const removedOrders = currentCheck.orders.filter(
+      (item) =>
+        !updatedCheck.orders.find(
+          (currItem) =>
+            currItem.order._id.toString() === item.order._id.toString()
+        )
+    );
+
+    for (let item of updatedCheck.orders) {
+      const targetProduct = await Base.findById(item.order.product._id);
+      const beforeOrderCount =
+        currentCheck.orders.find(
+          (currItem) =>
+            currItem.order._id.toString() == item.order._id.toString()
+        )?.orderCount || 0;
+
+      const orderCount = item.orderCount - beforeOrderCount;
+
+      targetProduct.totalAmount -= orderCount;
+
+      await targetProduct.save();
+    }
+
+    for (let item of removedOrders) {
+      const targetProduct = await Base.findById(item.order.product._id);
+
+      targetProduct.totalAmount += item.orderCount;
+
+      await targetProduct.save();
     }
 
     res.status(200).json(updatedCheck);
