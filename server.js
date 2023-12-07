@@ -48,10 +48,10 @@ app.get("/", (req, res) => {
 });
 
 mongoose
-  .connect(uri)
+  .connect(process.env.DB_URI)
   .then(() => {
     console.log("connected database");
-    app.listen(port, async () => {
+    app.listen(process.env.PORT, async () => {
       console.log(`listen server at ${port}`);
     });
   })
