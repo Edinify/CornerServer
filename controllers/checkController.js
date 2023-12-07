@@ -74,9 +74,7 @@ export const getCheck = async (req, res) => {
 // Update check
 export const updateCheck = async (req, res) => {
   const { id } = req.params;
-
-  // ================================
-  console.log(req.body);
+  const { status } = req.body;
 
   try {
     const currentCheck = await Check.findById(id);
@@ -118,6 +116,19 @@ export const updateCheck = async (req, res) => {
       targetProduct.totalAmount += item.orderCount;
 
       await targetProduct.save();
+    }
+
+    if (
+      currentCheck.status !== "cancelled" &&
+      updatedCheck.status === "cancelled"
+    ) {
+      for (let item of updatedCheck.orders) {
+        const targetProduct = await Base.findById(item.order.product._id);
+
+        targetProduct.totalAmount += item.orderCount;
+
+        await targetProduct.save();
+      }
     }
 
     res.status(200).json(updatedCheck);
