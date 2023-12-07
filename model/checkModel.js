@@ -8,9 +8,7 @@ const checkSchema = new Schema(
       type: [
         {
           order: {
-            name: {
-              type: String,
-            },
+            type: Object,
           },
           orderCount: {
             type: Number,

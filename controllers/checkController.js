@@ -3,15 +3,16 @@ import { Check } from "../model/checkModel.js";
 
 // Create check
 export const createCheck = async (req, res) => {
+  console.log(req.body, "new check");
   try {
     const newCheck = new Check(req.body);
     await newCheck.save();
 
-  //  newCheck.orders.forEach(async item=> {
-  //   const baseProduct = await Base.findByIdAndUpdate
-  //  })
+    //  newCheck.orders.forEach(async item=> {
+    //   const baseProduct = await Base.findByIdAndUpdate
+    //  })
 
-    res.status(201).json({ check: newCheck });
+    res.status(201).json(newCheck);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
