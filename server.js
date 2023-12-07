@@ -1,8 +1,8 @@
+import cors from "cors";
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import cors from "cors";
 
 import authRoutes from "./router/authRoutes.js";
 import adminRoutes from "./router/adminRoutes.js";
@@ -17,19 +17,20 @@ import checkRoutes from "./router/checkRoutes.js";
 
 dotenv.config();
 
-const port = process.env.PORT;
-const db_uri = process.env.DB_URI;
-
 const app = express();
-
+const port = process.env.PORT;
+const uri = process.env.DB_URI;
 app.use(
   cors({
-    origin:'*',
+    origin: process.env.URL_PORT,
+    credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     exposedHeaders: ["Content-Type"],
   })
 );
+
+
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -48,8 +49,12 @@ app.get("/", (req, res) => {
   res.send("salam");
 });
 
-mongoose.connect(db_uri).then(() => {
-  app.listen(port, () => {
-    console.log("server listen to 4000 port");
-  });
-});
+mongoose
+  .connect(uri)
+  .then(() => {
+    console.log("connected database");
+    app.listen(port, async () => {
+      console.log(`listen server at ${port}`);
+    });
+  })
+  .catch((err) => console.log(err));
