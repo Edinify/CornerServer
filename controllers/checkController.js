@@ -3,9 +3,18 @@ import { Check } from "../model/checkModel.js";
 
 // Create check
 export const createCheck = async (req, res) => {
-  const { orders } = req.body;
+  const { orders, table } = req.body;
   console.log(req.body, "new check");
   try {
+    const existsCheck = await Check.findOne({
+      status: "open",
+      "table._id": table._id,
+    });
+
+    if (existsCheck) {
+      return res.status(409).json({ message: "exist same table open check" });
+    }
+
     const newCheck = new Check(req.body);
     await newCheck.save();
 
@@ -65,6 +74,9 @@ export const getCheck = async (req, res) => {
 // Update check
 export const updateCheck = async (req, res) => {
   const { id } = req.params;
+
+  // ================================
+  console.log(req.body);
 
   try {
     const currentCheck = await Check.findById(id);
