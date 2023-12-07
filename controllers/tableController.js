@@ -64,8 +64,6 @@ export const getTablesForUser = async (req, res) => {
       })
     );
 
-    console.log(checkedTables);
-
     res.status(200).json(checkedTables);
   } catch (err) {
     return res.status(500).json({ message: { error: err.message } });
