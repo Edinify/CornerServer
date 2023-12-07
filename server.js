@@ -20,6 +20,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 const uri = process.env.DB_URI;
+console.log(process.env.URL_PORT)
 app.use(
   cors({
     origin: process.env.URL_PORT,
