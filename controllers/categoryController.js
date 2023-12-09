@@ -49,6 +49,23 @@ export const getCategories = async (req, res) => {
   }
 };
 
+
+// Get categories
+export const getCategoriesProduct = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+
+  try {
+    const categoriesCount = await Category.countDocuments();
+
+    const categories = await Category.find()
+
+    res.status(200).json({ categories });
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
 // Update category
 export const updateCategory = async (req, res) => {
   const { id } = req.params;
@@ -100,3 +117,5 @@ export const deleteCategory = async (req, res) => {
     res.status(500).json({ message: { error: err.message } });
   }
 };
+
+
