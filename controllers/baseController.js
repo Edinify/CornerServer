@@ -32,7 +32,6 @@ export const createBaseProduct = async (req, res) => {
 export const getBaseProducts = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
-
   try {
     const productsCount = await Base.countDocuments();
 
@@ -41,8 +40,24 @@ export const getBaseProducts = async (req, res) => {
     const products = await Base.find()
       .skip((page - 1) * limit)
       .limit(limit);
-
+      console.log(products)
     res.status(200).json({ products, totalPages });
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
+export const getBaseProductsDropdown = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+  try {
+    const productsCount = await Base.countDocuments();
+
+
+    const products = await Base.find()
+
+      console.log(products)
+    res.status(200).json({ products });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
   }
