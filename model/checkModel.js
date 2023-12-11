@@ -16,6 +16,18 @@ const checkSchema = new Schema(
         },
       ],
     },
+    sets: {
+      type: [
+        {
+          set: {
+            type: Object,
+          },
+          setCount: {
+            type: Number,
+          },
+        },
+      ],
+    },
     table: {
       type: Object,
       required: true,

@@ -86,9 +86,86 @@ export const deleteMenuProduct = async (req, res) => {
 };
 
 // PRODUCTS SET FUNCTIONS
-export const createSet = async (req, res) => {
+// Create menu set
+export const createMenuSet = async (req, res) => {
   try {
-    
+    const newSet = new Set(req.body);
+    await newSet.save();
+    await newSet.populate("products.product");
+
+    const setsCount = await Set.countDocuments();
+    const lastPage = Math.ceil(setsCount / 10);
+
+    res.status(201).json({ set: newSet, lastPage });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get menu sets
+export const getMenuSets = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = 10;
+
+  try {
+    const setsCount = await Set.countDocuments();
+
+    const totalPages = Math.ceil(setsCount / limit);
+
+    const sets = await Set.find()
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .populate("products.product");
+
+    res.status(200).json({ sets, totalPages });
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
+// Get menu sets for user
+export const getMenuSetsForUser = async (req, res) => {
+  try {
+    const sets = await Set.find().populate("products.product");
+
+    res.status(200).json(sets);
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
+// Update menu set
+export const updateMenuSet = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const updatedSet = await Set.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    }).populate("products.product");
+
+    if (!updatedSet) {
+      return res.status(404).json({ message: "Set not found" });
+    }
+
+    res.status(200).json(updatedSet);
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};
+
+// Delete menu set
+export const deleteMenuSet = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const deletedSet = await Set.findByIdAndDelete(id);
+
+    if (!deletedSet) {
+      return res.status(404).json({ message: "Set not found" });
+    }
+
+    res.status(200).json(deletedSet);
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
   }
