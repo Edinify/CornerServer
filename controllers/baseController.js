@@ -39,8 +39,9 @@ export const getBaseProducts = async (req, res) => {
 
     const products = await Base.find()
       .skip((page - 1) * limit)
-      .limit(limit);
-    console.log(products);
+      .limit(limit)
+      .populate("category");
+
     res.status(200).json({ products, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
@@ -50,7 +51,7 @@ export const getBaseProducts = async (req, res) => {
 export const getBaseProductsByCategoryId = async (req, res) => {
   const { categoryId } = req.query;
   try {
-    const products = await Base.find({ categoryId: categoryId });
+    const products = await Base.find({ category: categoryId });
 
     res.status(200).json({ products });
   } catch (err) {

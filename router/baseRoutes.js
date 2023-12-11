@@ -5,7 +5,6 @@ import {
   deleteBaseProduct,
   getBaseProducts,
   getBaseProductsByCategoryId,
-  getBaseProductsDropdown,
   updateBaseProduct,
 } from "../controllers/baseController.js";
 

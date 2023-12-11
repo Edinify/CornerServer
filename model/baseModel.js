@@ -8,9 +8,10 @@ const baseSchema = new Schema(
       type: String,
       required: true,
     },
-    categoryId: {
+    category: {
       type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Category",
     },
     totalAmount: {
       type: Number,
