@@ -84,3 +84,12 @@ export const deleteMenuProduct = async (req, res) => {
     res.status(500).json({ message: { error: err.message } });
   }
 };
+
+// PRODUCTS SET FUNCTIONS
+export const createSet = async (req, res) => {
+  try {
+    
+  } catch (err) {
+    res.status(500).json({ message: { error: err.message } });
+  }
+};

@@ -8,6 +8,10 @@ const baseSchema = new Schema(
       type: String,
       required: true,
     },
+    categoryId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     totalAmount: {
       type: Number,
       required: true,
