@@ -5,7 +5,7 @@ const Schema = mongoose.Schema;
 const menuSchema = new Schema(
   {
     category: {
-      type: String,
+      type: Object,
       required: true,
     },
     product: {
