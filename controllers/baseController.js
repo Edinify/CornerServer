@@ -53,7 +53,7 @@ export const getBaseProductsByCategoryId = async (req, res) => {
   try {
     const products = await Base.find({ category: categoryId });
 
-    res.status(200).json({ products });
+    res.status(200).json(products);
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
   }
@@ -75,11 +75,14 @@ export const updateBaseProduct = async (req, res) => {
   const { productName } = req.body;
 
   try {
-    const regexName = new RegExp(productName, "i");
+    const regexName = new RegExp(`^${productName.trim()}$`, "i");
     const checkProduct = await Base.findOne({
       _id: { $ne: id },
       productName: { $regex: regexName },
     });
+
+    console.log(checkProduct);
+    console.log(productName);
 
     if (checkProduct) {
       return res.status(409).json({
@@ -91,7 +94,7 @@ export const updateBaseProduct = async (req, res) => {
     const updatedProduct = await Base.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
-    });
+    }).populate("category");
 
     if (!updatedProduct) {
       return res.status(404).json({ message: "Base Product not found" });
