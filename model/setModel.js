@@ -26,6 +26,10 @@ const setSchema = new Schema({
     type: Number,
     required: true,
   },
+  name: {
+    type: String,
+    required: true,
+  },
 });
 
 export const Set = mongoose.model("Set", setSchema);

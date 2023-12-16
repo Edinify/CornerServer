@@ -89,10 +89,13 @@ export const deleteMenuProduct = async (req, res) => {
 // PRODUCTS SET FUNCTIONS
 // Create menu set
 export const createMenuSet = async (req, res) => {
+  console.log(req.body)
   try {
     const newSet = new Set(req.body);
     await newSet.save();
     await newSet.populate("products.product");
+    console.log(newSet)
+
 
     const setsCount = await Set.countDocuments();
     const lastPage = Math.ceil(setsCount / 10);
@@ -109,6 +112,8 @@ export const getMenuSets = async (req, res) => {
   const limit = 10;
 
   try {
+
+
     const setsCount = await Set.countDocuments();
 
     const totalPages = Math.ceil(setsCount / limit);
