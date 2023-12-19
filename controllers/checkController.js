@@ -3,8 +3,7 @@ import { Check } from "../model/checkModel.js";
 
 // Create check
 export const createCheck = async (req, res) => {
-  const { orders, table } = req.body;
-  console.log(req.body, "new check");
+  const { orders, table, sets } = req.body;
   try {
     const existsCheck = await Check.findOne({
       status: "open",
@@ -26,6 +25,22 @@ export const createCheck = async (req, res) => {
       console.log(targetProduct, "create targetProduct");
     }
 
+    for (let item of sets) {
+      for (let productItem of item.set.products) {
+        const targetProduct = await Base.findById(productItem.product._id);
+
+        targetProduct.totalAmount -= parseFloat(
+          (
+            productItem.productCount *
+            productItem.productUnitAmount *
+            item.setCount
+          ).toFixed(2)
+        );
+
+        await targetProduct.save();
+      }
+    }
+
     res.status(201).json(newCheck);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -45,7 +60,7 @@ export const getChecks = async (req, res) => {
     const checks = await Check.find()
       .skip((page - 1) * limit)
       .limit(limit);
-    console.log(checks,2)
+    console.log(checks, 2);
     res.status(200).json({ checks, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
@@ -64,7 +79,7 @@ export const getCheck = async (req, res) => {
         .status(404)
         .json({ key: "check-not-found", message: "check note found" });
     }
-    console.log(check,"1")
+    console.log(check, "1");
     res.status(200).json(check);
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
@@ -83,6 +98,8 @@ export const updateCheck = async (req, res) => {
       runValidators: true,
     });
 
+    console.log(updateCheck, "updated check");
+
     if (!updatedCheck) {
       return res.status(404).json({ message: "check not found" });
     }
@@ -92,6 +109,13 @@ export const updateCheck = async (req, res) => {
         !updatedCheck.orders.find(
           (currItem) =>
             currItem.order._id.toString() === item.order._id.toString()
+        )
+    );
+
+    const removedSets = currentCheck.sets.filter(
+      (item) =>
+        !updatedCheck.sets.find(
+          (currItem) => currItem.set._id.toString() === item.set._id.toString()
         )
     );
 
@@ -118,16 +142,117 @@ export const updateCheck = async (req, res) => {
       await targetProduct.save();
     }
 
+    for (let item of updatedCheck.sets) {
+      console.log(item.set);
+      for (let productItem of item.set.products) {
+        // set daxilindəki cari product
+        const targetProduct = await Base.findById(productItem.product._id);
+
+        console.log(targetProduct, "target product");
+
+        console.log(currentCheck.sets, "currentcheck sets");
+        console.log(productItem, "product item");
+
+        // yenilənməmiş check-in set-ləri daxilindən cari set-in tapılması
+        const targetSetItem = currentCheck.sets.find(
+          (currItem) => currItem.set._id == item.set._id
+        );
+
+        console.log(targetSetItem, "target set item");
+
+        // əvvəlki checkdən tapılan uyğun set daxilindəki cari product ilə eyni productun tapılması
+        const targetProductItem = targetSetItem?.set?.products.find(
+          (proItem) =>
+            proItem.product._id.toString() ===
+            productItem.product._id.toString()
+        );
+
+        console.log(targetProductItem, "targetProductItem");
+
+        // əvvəlki cehckdəki uyğun productun nə qədər olduğunu tapmaq
+        const beforeProductCount = parseFloat(
+          (
+            (targetProductItem?.productCount || 0) *
+            (productItem?.productUnitAmount || 0) *
+            (targetSetItem?.setCount || 0)
+          ).toFixed(2)
+        );
+
+        // yeni check-dəki cari productun nə qədər olduğunu tapmaq
+        const newProductCount = parseFloat(
+          (
+            productItem.productCount *
+            productItem.productUnitAmount *
+            item.setCount
+          ).toFixed(2)
+        );
+
+        console.log(beforeProductCount, "beforeProductCount");
+        console.log(newProductCount, "newProductCount");
+
+        // əvvəlki cehck ilə yeni check-in fərqlərini tapıb anbardakı məhsul sayını yeniləmək
+        const productCount = beforeProductCount - newProductCount;
+
+        console.log(productCount, "productCount");
+
+        console.log(targetProduct.totalAmount, "old totalAmount");
+
+        targetProduct.totalAmount += parseFloat(productCount.toFixed(2));
+
+        console.log(targetProduct.totalAmount, "new totalAmount");
+
+        await targetProduct.save();
+      }
+    }
+
+    for (let item of removedSets) {
+      for (let productItem of item.set.products) {
+        const targetProduct = await Base.findById(productItem.product._id);
+
+        targetProduct.totalAmount += parseFloat(
+          (
+            productItem.productCount *
+            productItem.productUnitAmount *
+            item.setCount
+          ).toFixed(2)
+        );
+
+        await targetProduct.save();
+      }
+    }
+
     if (
       currentCheck.status !== "cancelled" &&
       updatedCheck.status === "cancelled"
     ) {
+      console.log("salam");
+
       for (let item of updatedCheck.orders) {
         const targetProduct = await Base.findById(item.order.product._id);
 
         targetProduct.totalAmount += item.orderCount;
 
         await targetProduct.save();
+      }
+
+      for (let item of updatedCheck.sets) {
+        console.log(item, "update sets");
+
+        for (let productItem of item.set.products) {
+          console.log(productItem, "product item");
+
+          const targetProduct = await Base.findById(productItem.product._id);
+
+          targetProduct.totalAmount += parseFloat(
+            (
+              productItem.productCount *
+              productItem.productUnitAmount *
+              item.setCount
+            ).toFixed(2)
+          );
+
+          await targetProduct.save();
+        }
       }
     }
 
