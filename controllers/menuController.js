@@ -112,8 +112,7 @@ export const getMenuSets = async (req, res) => {
   const limit = 10;
 
   try {
-
-
+  
     const setsCount = await Set.countDocuments();
 
     const totalPages = Math.ceil(setsCount / limit);
