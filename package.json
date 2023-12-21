@@ -7,7 +7,7 @@
   "description": "",
   "type": "module",
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "node server.js"
   },
   "keywords": [],
   "dependencies": {
