@@ -31,7 +31,8 @@ app.use(
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-// 
+
+
 app.use("/api/auth/admin/", authRoutes);
 app.use("/api/admin/", adminRoutes);
 app.use("/api/user/", userRoutes);
