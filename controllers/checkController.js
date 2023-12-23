@@ -1,5 +1,6 @@
 import { Base } from "../model/baseModel.js";
 import { Check } from "../model/checkModel.js";
+import { calcDate } from "../calculate/calculateDate.js";
 
 // Create check
 export const createCheck = async (req, res) => {
@@ -49,18 +50,34 @@ export const createCheck = async (req, res) => {
 
 // Get checks
 export const getChecks = async (req, res) => {
+  const { startDate, endDate } = req.query;
+
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
 
   try {
-    const checksCount = await Check.countDocuments();
+    let targetDate;
+    if (startDate && endDate) {
+      targetDate = calcDate(null, startDate, endDate);
+    } else {
+      targetDate = calcDate(1);
+    }
+    console.log(targetDate);
+
+    const filterObj = {
+      createdAt: {
+        $gte: targetDate.startDate,
+        $lte: targetDate.endDate,
+      },
+    };
+    const checksCount = await Check.countDocuments(filterObj);
 
     const totalPages = Math.ceil(checksCount / limit);
 
-    const checks = await Check.find()
+    const checks = await Check.find(filterObj)
       .skip((page - 1) * limit)
       .limit(limit);
-    console.log(checks, 2);
+
     res.status(200).json({ checks, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
