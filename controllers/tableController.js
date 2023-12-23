@@ -52,7 +52,7 @@ export const getTables = async (req, res) => {
 // Get tables for user
 export const getTablesForUser = async (req, res) => {
   try {
-    const tables = await Table.find();
+    const tables = await Table.find().sort({ tableNumber: 1 });
 
     const checkedTables = await Promise.all(
       tables.map(async (table) => {
