@@ -32,17 +32,18 @@ export const createTable = async (req, res) => {
 export const getTables = async (req, res) => {
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
-
+  
   try {
     const tablesCount = await Table.countDocuments();
 
     const totalPages = Math.ceil(tablesCount / limit);
-
+    
     const tables = await Table.find()
       .skip((page - 1) * limit)
       .limit(limit)
       .sort({ tableNumber: 1 });
-
+      console.log(tables)
+      
     res.status(200).json({ tables, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
@@ -54,6 +55,7 @@ export const getTablesForUser = async (req, res) => {
   try {
     const tables = await Table.find().sort({ tableNumber: 1 });
 
+    console.log(tables);
     const checkedTables = await Promise.all(
       tables.map(async (table) => {
         const checkTable = await Check.findOne({
@@ -67,6 +69,7 @@ export const getTablesForUser = async (req, res) => {
 
     res.status(200).json(checkedTables);
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: { error: err.message } });
   }
 };

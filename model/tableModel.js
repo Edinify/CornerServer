@@ -29,4 +29,6 @@ const tableSchema = new Schema(
   { timestamps: true }
 );
 
+tableSchema.index({tableNumber: 1})
+
 export const Table = mongoose.model("Table", tableSchema);
