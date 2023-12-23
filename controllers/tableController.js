@@ -40,7 +40,8 @@ export const getTables = async (req, res) => {
 
     const tables = await Table.find()
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .sort({ tableNumber: 1 });
 
     res.status(200).json({ tables, totalPages });
   } catch (err) {
