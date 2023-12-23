@@ -62,6 +62,7 @@ export const getChecks = async (req, res) => {
     } else {
       targetDate = calcDate(1);
     }
+    console.log(targetDate);
 
     const filterObj = {
       createdAt: {
@@ -76,7 +77,7 @@ export const getChecks = async (req, res) => {
     const checks = await Check.find(filterObj)
       .skip((page - 1) * limit)
       .limit(limit);
-    console.log(checks, 2);
+
     res.status(200).json({ checks, totalPages });
   } catch (err) {
     res.status(500).json({ message: { error: err.message } });
