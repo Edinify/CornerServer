@@ -55,6 +55,7 @@ export const getTablesForUser = async (req, res) => {
   try {
     const tables = await Table.find().sort({ tableNumber: 1 });
 
+    console.log(tables);
     const checkedTables = await Promise.all(
       tables.map(async (table) => {
         const checkTable = await Check.findOne({
@@ -68,6 +69,7 @@ export const getTablesForUser = async (req, res) => {
 
     res.status(200).json(checkedTables);
   } catch (err) {
+    console.log(err);
     return res.status(500).json({ message: { error: err.message } });
   }
 };
