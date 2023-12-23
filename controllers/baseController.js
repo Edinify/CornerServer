@@ -30,14 +30,30 @@ export const createBaseProduct = async (req, res) => {
 
 // Get base products
 export const getBaseProducts = async (req, res) => {
+  const { searchQuery, categoryId } = req.query;
   const page = parseInt(req.query.page) || 1;
   const limit = 10;
+
+  console.log(req.query, "base queries");
   try {
-    const productsCount = await Base.countDocuments();
+    const filterObj = {};
+
+    if (searchQuery?.trim()) {
+      const regexSearchQuery = new RegExp(searchQuery.trim(), "i");
+      filterObj.productName = { $regex: regexSearchQuery };
+    }
+
+    if (categoryId) {
+      console.log("salam");
+      filterObj.category = categoryId;
+    }
+
+    console.log(filterObj, "asfa");
+    const productsCount = await Base.countDocuments(filterObj);
 
     const totalPages = Math.ceil(productsCount / limit);
 
-    const products = await Base.find()
+    const products = await Base.find(filterObj)
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("category");

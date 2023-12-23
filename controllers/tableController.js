@@ -40,7 +40,8 @@ export const getTables = async (req, res) => {
 
     const tables = await Table.find()
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .sort({ tableNumber: 1 });
 
     res.status(200).json({ tables, totalPages });
   } catch (err) {
@@ -51,7 +52,7 @@ export const getTables = async (req, res) => {
 // Get tables for user
 export const getTablesForUser = async (req, res) => {
   try {
-    const tables = await Table.find();
+    const tables = await Table.find().sort({ tableNumber: 1 });
 
     const checkedTables = await Promise.all(
       tables.map(async (table) => {
